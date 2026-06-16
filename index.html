@@ -1,0 +1,1168 @@
+<!DOCTYPE html> html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #6C5CE7;
+    --primary-light: #a29bfe;
+    --primary-dark: #4834d4;
+    --secondary: #00cec9;
+    --accent: #fd79a8;
+    --success: #00b894;
+    --warning: #fdcb6e;
+    --danger: #e17055;
+    --bg: #0f0e17;
+    --bg2: #1a1a2e;
+    --bg3: #16213e;
+    --card: rgba(255,255,255,0.05);
+    --card-border: rgba(255,255,255,0.1);
+    --text: #fffffe;
+    --text-muted: rgba(255,255,255,0.55);
+    --glass: rgba(108,92,231,0.08);
+  }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+  /* PARTICLES */
+  #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .particle { position: absolute; border-radius: 50%; animation: float linear infinite; }
+
+  @keyframes float {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+  }
+  @keyframes slideIn { from { transform: translateX(-30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes fadeUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes ripple { 0% { transform: scale(0); opacity: 0.5; } 100% { transform: scale(4); opacity: 0; } }
+  @keyframes countUp { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+
+  /* PAGES */
+  .page { display: none; min-height: 100vh; position: relative; z-index: 1; }
+  .page.active { display: flex; }
+
+  /* AUTH PAGES */
+  .auth-container {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 2rem; width: 100%;
+  }
+  .auth-card {
+    background: rgba(26,26,46,0.9); border: 1px solid var(--card-border);
+    border-radius: 24px; padding: 2.5rem; width: 100%; max-width: 440px;
+    backdrop-filter: blur(20px); animation: fadeUp 0.6s ease;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative; overflow: hidden;
+  }
+  .auth-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+  }
+  .logo-area { text-align: center; margin-bottom: 2rem; }
+  .logo-icon {
+    width: 72px; height: 72px; border-radius: 20px; margin: 0 auto 1rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex; align-items: center; justify-content: center; font-size: 32px;
+    box-shadow: 0 8px 24px rgba(108,92,231,0.4); animation: pulse 3s ease-in-out infinite;
+  }
+  .logo-area h1 { font-size: 1.6rem; font-weight: 700; background: linear-gradient(90deg, var(--primary-light), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .logo-area p { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+
+  .form-group { margin-bottom: 1.2rem; }
+  .form-label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+  .form-input {
+    width: 100%; padding: 12px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; color: var(--text); font-size: 0.95rem; outline:none;
+    transition: all 0.3s ease;
+  }
+  .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,92,231,0.2); background: rgba(108,92,231,0.05); }
+  .form-input::placeholder { color: rgba(255,255,255,0.25); }
+  .input-with-icon { position: relative; }
+  .input-with-icon .form-input { padding-left: 44px; }
+  .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 18px; }
+
+  .btn {
+    width: 100%; padding: 13px; border: none; border-radius: 12px; font-size: 0.95rem;
+    font-weight: 600; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; box-shadow: 0 4px 15px rgba(108,92,231,0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(108,92,231,0.6); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-secondary { background: rgba(255,255,255,0.07); color: var(--text); border: 1px solid var(--card-border); }
+  .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+  .btn::after { content: ''; position: absolute; top: 50%; left: 50%; width: 10px; height: 10px; background: rgba(255,255,255,0.3); border-radius: 50%; transform: translate(-50%,-50%) scale(0); transition: transform 0.5s, opacity 0.5s; }
+  .btn:active::after { animation: ripple 0.5s ease-out; }
+
+  .divider { display: flex; align-items: center; gap: 12px; margin: 1.2rem 0; }
+  .divider span { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
+  .switch-text { text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 1.2rem; }
+  .switch-text a { color: var(--primary-light); cursor: pointer; text-decoration: none; font-weight: 600; }
+  .switch-text a:hover { color: var(--secondary); }
+
+  /* OTP */
+  .otp-boxes { display: flex; gap: 10px; justify-content: center; margin: 1rem 0; }
+  .otp-box {
+    width: 52px; height: 56px; text-align: center; font-size: 1.3rem; font-weight: 700;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; color: var(--text); outline: none; transition: all 0.3s;
+  }
+  .otp-box:focus { border-color: var(--primary); background: rgba(108,92,231,0.1); box-shadow: 0 0 0 3px rgba(108,92,231,0.2); }
+  .otp-box.filled { border-color: var(--success); background: rgba(0,184,148,0.1); }
+  .otp-timer { text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; }
+  .otp-timer span { color: var(--primary-light); font-weight: 600; }
+
+  /* ROLE SELECTOR */
+  .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.2rem; }
+  .role-card {
+    padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03); cursor: pointer; text-align: center; transition: all 0.3s;
+  }
+  .role-card:hover { border-color: var(--primary); background: rgba(108,92,231,0.1); }
+  .role-card.selected { border-color: var(--primary); background: rgba(108,92,231,0.15); box-shadow: 0 0 0 3px rgba(108,92,231,0.2); }
+  .role-card i { font-size: 28px; display: block; margin-bottom: 6px; }
+  .role-card span { font-size: 0.8rem; font-weight: 600; }app-page { flex-direction: column; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 260px; background: rgba(22,33,62,0.95);
+    border-right: 1px solid var(--card-border); backdrop-filter: blur(20px); z-index: 100;
+    display: flex; flex-direction: column; transition: transform 0.3s ease;
+  }
+  .sidebar-logo { padding: 1.5rem; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--card-border); }
+  .sidebar-logo-icon { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .sidebar-logo h2 { font-size: 1rem; font-weight: 700; background: linear-gradient(90deg, var(--primary-light), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .sidebar-logo small { color: var(--text-muted); font-size: 0.7rem; }
+
+  .sidebar-user { padding: 1rem 1.5rem; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--card-border); }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+  .user-info h4 { font-size: 0.85rem; font-weight: 600; }
+  .user-info span { font-size: 0.7rem; color: var(--text-muted); }
+  .online-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; margin-right: 4px; animation: pulse 2s infinite; }
+
+  .nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+  .nav-section-label { padding: 0.5rem 1.5rem; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px; padding: 11px 1.5rem; cursor: pointer;
+    transition: all 0.2s; position: relative; font-size: 0.88rem; color: var(--text-muted);
+  }
+  .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  .nav-item.active { color: var(--primary-light); background: rgba(108,92,231,0.12); }
+  .nav-item.active::before { content: ''; position: absolute; left: 0; top: 25%; bottom: 25%; width: 3px; background: var(--primary); border-radius: 0 3px 3px 0; }
+  .nav-item i { font-size: 20px; width: 22px; }
+  .nav-badge { margin-left: auto; background: var(--danger); color: white; font-size: 0.65rem; padding: 2px 7px; border-radius: 20px; font-weight: 700; }
+  .sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--card-border); }
+
+  /* MAIN CONTENT */
+  .main { margin-left: 260px; min-height: 100vh; display: flex; flex-direction: column; }
+  .topbar {
+    padding: 1rem 1.8rem; background: rgba(15,14,23,0.8); border-bottom: 1px solid var(--card-border);
+    backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: between; gap: 16px;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar h2 { font-size: 1.1rem; font-weight: 700; flex: 1; }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .icon-btn {
+    width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--card-border);
+    background: transparent; color: var(--text-muted); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px; transition: all 0.2s;
+  }
+  .icon-btn:hover { color: var(--text); border-color: var(--primary); background: rgba(108,92,231,0.1); }
+
+  .content { flex: 1; padding: 1.8rem; }
+
+  /* TABS */
+  .tab-nav { display: flex; gap: 4px; background: rgba(255,255,255,0.04); padding: 5px; border-radius: 14px; margin-bottom: 1.5rem; }
+  .tab-btn {
+    flex: 1; padding: 9px; border: none; border-radius: 10px; background: transparent;
+    color: var(--text-muted); font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .tab-btn.active { background: rgba(108,92,231,0.25); color: var(--primary-light); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
+
+  /* CARDS */
+  .card {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--card-border);
+    border-radius: 16px; padding: 1.25rem; transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .card:hover { border-color: rgba(108,92,231,0.3); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+  .card::before { content: ''; position: absolute; inset: 0; opacity: 0; background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(108,92,231,0.06), transparent 60%); transition: opacity 0.3s; pointer-events: none; }
+  .card:hover::before { opacity: 1; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 1.5rem; }
+  .stat-card { background: rgba(255,255,255,0.04); border: 1px solid var(--card-border); border-radius: 16px; padding: 1.2rem; position: relative; overflow: hidden; transition: all 0.3s; }
+  .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 35px rgba(0,0,0,0.3); }
+  .stat-card::after { content: ''; position: absolute; bottom: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; opacity: 0.15; }
+  .stat-card.purple::after { background: var(--primary); }
+  .stat-card.teal::after { background: var(--secondary); }
+  .stat-card.green::after { background: var(--success); }
+  .stat-card.red::after { background: var(--danger); }
+  .stat-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px; }
+  .stat-icon.purple { background: rgba(108,92,231,0.2); color: var(--primary-light); }
+  .stat-icon.teal { background: rgba(0,206,201,0.2); color: var(--secondary); }
+  .stat-icon.green { background: rgba(0,184,148,0.15); color: var(--success); }
+  .stat-icon.red { background: rgba(225,112,85,0.15); color: var(--danger); }
+  .stat-value { font-size: 1.9rem; font-weight: 800; letter-spacing: -1px; animation: countUp 0.5s ease; }
+  .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+  .stat-change { font-size: 0.72rem; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+  .stat-change.up { color: var(--success); }
+  .stat-change.down { color: var(--danger); }ATTENDANCE TABLE */
+  .table-card { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; }
+  .table-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; }
+  .table-header h3 { font-size: 0.95rem; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; }
+  th { padding: 10px 14px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); text-align: left; border-bottom: 1px solid var(--card-border); background: rgba(255,255,255,0.02); }
+  td { padding: 12px 14px; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; }
+  tr:hover td { background: rgba(255,255,255,0.03); }
+  tr:last-child td { border-bottom: none; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+  .badge.present { background: rgba(0,184,148,0.15); color: var(--success); }
+  .badge.absent { background: rgba(225,112,85,0.15); color: var(--danger); }
+  .badge.late { background: rgba(253,203,110,0.15); color: var(--warning); }
+  .badge.leave { background: rgba(162,155,254,0.15); color: var(--primary-light); }
+
+  /* SEARCH BAR */
+  .search-bar {
+    display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05);
+    border: 1px solid var(--card-border); border-radius: 10px; padding: 8px 14px; width: 220px;
+  }
+  .search-bar input { background: none; border: none; outline: none; color: var(--text); font-size: 0.85rem; flex: 1; }
+  .search-bar i { color: var(--text-muted); font-size: 16px; }
+
+  /* PROGRESS BAR */
+  .progress-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+  .progress-fill { height: 100%; border-radius: 10px; transition: width 1s ease; }
+
+  /* CHARTS AREA */
+  .charts-row { display: grid; grid-template-columns: 1.8fr 1fr; gap: 14px; margin-bottom: 1.5rem; }
+  .mini-bars { display: flex; align-items: flex-end; gap: 5px; height: 80px; margin: 1rem 0; }
+  .mini-bar { flex: 1; border-radius: 4px 4px 0 0; transition: all 0.5s ease; cursor: pointer; min-width: 20px; }
+  .mini-bar:hover { filter: brightness(1.3); transform: scaleY(1.05); transform-origin: bottom; }
+  .bar-labels { display: flex; gap: 5px; }
+  .bar-label { flex: 1; text-align: center; font-size: 0.65rem; color: var(--text-muted); min-width: 20px; }
+
+  /* DONUT CHART */
+  .donut-wrap { position: relative; width: 130px; height: 130px; margin: 0 auto 1rem; }
+  .donut-wrap svg { transform: rotate(-90deg); }
+  .donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .donut-center span { font-size: 1.6rem; font-weight: 800; }
+  .donut-center small { font-size: 0.65rem; color: var(--text-muted); }
+  .donut-legend { display: flex; flex-direction: column; gap: 7px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+  /* MARK ATTENDANCE */
+  .student-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .student-mark-card {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--card-border); border-radius: 14px;
+    padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s; position: relative;
+  }
+  .student-mark-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+  .student-mark-card.present-marked { border-color: var(--success); background: rgba(0,184,148,0.1); }
+  .student-mark-card.absent-marked { border-color: var(--danger); background: rgba(225,112,85,0.1); }
+  .student-mark-card.late-marked { border-color: var(--warning); background: rgba(253,203,110,0.1); }
+  .stu-avatar { width: 46px; height: 46px; border-radius: 50%; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
+  .stu-name { font-size: 0.8rem; font-weight: 600; margin-bottom: 2px; }
+  .stu-roll { font-size: 0.7rem; color: var(--text-muted); }
+  .status-pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 700; margin-top: 8px; text-transform: uppercase; }
+  .mark-btn-row { display: flex; gap: 5px; justify-content: center; margin-top: 10px; }
+  .mark-btn { padding: 4px 9px; border-radius: 6px; border: none; font-size: 0.68rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .mark-btn.p { background: rgba(0,184,148,0.2); color: var(--success); }
+  .mark-btn.p:hover { background: var(--success); color: white; }
+  .mark-btn.a { background: rgba(225,112,85,0.2); color: var(--danger); }
+  .mark-btn.a:hover { background: var(--danger); color: white; }
+  .mark-btn.l { background: rgba(253,203,110,0.2); color: var(--warning); }
+  .mark-btn.l:hover { background: var(--warning); color: #1a1a2e; }
+
+  /* PROFILE */
+  .profile-header { background: linear-gradient(135deg, rgba(108,92,231,0.2), rgba(0,206,201,0.1)); border: 1px solid var(--card-border); border-radius: 20px; padding: 2rem; display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; }
+  .profile-avatar-large { width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; border: 3px solid var(--primary); flex-shrink: 0; }
+  .profile-info h2 { font-size: 1.4rem; font-weight: 800; }
+  .profile-info p { color: var(--text-muted); font-size: 0.85rem; }
+  .profile-stats { display: flex; gap: 2rem; margin-top: 1rem; }
+  .profile-stat span { display: block; font-size: 1.3rem; font-weight: 800; }
+  .profile-stat small { font-size: 0.72rem; color: var(--text-muted); }
+  .profile-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,184,148,0.15); color: var(--success); padding: 5px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; margin-top: 8px; }
+  .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .profile-field { margin-bottom: 1rem; }
+  .profile-field label { display: block; font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+  .profile-field .field-val { font-size: 0.9rem; font-weight: 500; padding: 10px 14px; background: rgba(255,255,255,0.04); border: 1px solid var(--card-border); border-radius: 10px; }
+  .edit-form-input { width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: var(--text); font-size: 0.9rem; outline: none; transition: all 0.3s; }
+  .edit-form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(108,92,231,0.2); }
+
+  /* HELP DESK */
+  .help-hero { background: linear-gradient(135deg, rgba(108,92,231,0.15), rgba(253,121,168,0.1)); border: 1px solid var(--card-border); border-radius: 20px; padding: 2rem; text-align: center; margin-bottom: 1.5rem; }
+  .help-hero h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
+  .help-hero p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.2rem; }
+  .help-search { display: flex; gap: 10px; max-width: 400px; margin: 0 auto; }
+  .help-search input { flex: 1; padding: 11px 16px; background: rgba(255,255,255,0.07); border: 1px solid var(--card-border); border-radius: 10px; color: var(--text); font-size: 0.9rem; outline: none; }
+  .help-search input:focus { border-color: var(--primary); }
+  .faq-list { display: flex; flex-direction: column; gap: 10px; margin-top: 1rem; }
+  .faq-item { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 14px; overflow: hidden; }
+  .faq-q { padding: 1rem 1.25rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-size: 0.88rem; font-weight: 600; transition: background 0.2s; }
+  .faq-q:hover { background: rgba(255,255,255,0.04); }
+  .faq-a { padding: 0 1.25rem; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s; font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+  .faq-a.open { max-height: 150px; padding: 0 1.25rem 1rem; }
+  .faq-icon { transition: transform 0.3s; color: var(--text-muted); font-size: 16px; }
+  .faq-icon.open { transform: rotate(180deg); color: var(--primary-light); }
+  .ticket-form { background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 16px; padding: 1.5rem; }
+  .help-cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .help-cat { background: rgba(255,255,255,0.04); border: 1px solid var(--card-border); border-radius: 14px; padding: 1.2rem; text-align: center; cursor: pointer; transition: all 0.3s; }
+  .help-cat:hover { border-color: var(--primary); transform: translateY(-3px); }
+  .help-cat i { font-size: 26px; display: block; margin-bottom: 6px; color: var(--primary-light); }
+  .help-cat span { font-size: 0.78rem; font-weight: 600; }
+
+  /* NOTIFICATIONS */
+  .notif-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .notif-item:last-child { border-bottom: none; }
+  .notif-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .notif-text { font-size: 0.83rem; line-height: 1.5; }
+  .notif-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+  .section-title { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+  .row { display: flex; gap: 14px; }
+  .col { flex: 1; }
+  .mt1 { margin-top: 14px; }
+  .alert { padding: 10px 14px; border-radius: 10px; font-size: 0.83rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .alert.info { background: rgba(108,92,231,0.12); border: 1px solid rgba(108,92,231,0.2); color: var(--primary-light); }
+  .alert.success { background: rgba(0,184,148,0.12); border: 1px solid rgba(0,184,148,0.2); color: var(--success); }
+
+  select.form-input option { background: #1a1a2e; }
+  textarea.form-input { resize: vertical; min-height: 80px; }
+  .small-btn { padding: 8px 18px; border-radius: 10px; border: 1px solid var(--card-border); background: rgba(255,255,255,0.06); color: var(--text); font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .small-btn:hover { background: rgba(108,92,231,0.2); border-color: var(--primary); color: var(--primary-light); }
+  .small-btn.primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-color: transparent; color: white; }
+  .small-btn.primary:hover { box-shadow: 0 4px 15px rgba(108,92,231,0.4); transform: translateY(-1px); }
+  .flex-between { display: flex; align-items: center; justify-content: space-between; }
+  .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: rgba(30,30,60,0.95); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px 16px; font-size: 0.85rem; display: flex; align-items: center; gap: 10px; z-index: 9999; transform: translateY(100px); opacity: 0; transition: all 0.3s ease; backdrop-filter: blur(20px); max-width: 300px; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast i { font-size: 18px; }
+  .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
+  .cal-day:hover { background: rgba(255,255,255,0.08); }
+  .cal-day.present { background: rgba(0,184,148,0.2); color: var(--success); font-weight: 700; }
+  .cal-day.absent { background: rgba(225,112,85,0.2); color: var(--danger); }
+  .cal-day.today { border: 2px solid var(--primary); color: var(--primary-light); font-weight: 700; }
+  .cal-header { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; text-align: center; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div id="particles"></div>
+
+<!-- LOGIN PAGE -->
+<div class="page active" id="login-page">
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="logo-area">
+      <div class="logo-icon">📋</div>
+      <h1>AttendX</h1>
+      <p>Smart Attendance Management System</p>
+    </div>
+    <div class="role-grid">
+      <div class="role-card selected" onclick="selectRole(this,'teacher')" id="role-teacher">
+        <i style="color:#a29bfe">👨‍🏫</i>
+        <span>Teacher</span>
+      </div>
+      <div class="role-card" onclick="selectRole(this,'student')" id="role-student">
+        <i style="color:#00cec9">👨‍🎓</i>
+        <span>Student</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <div class="input-with-icon">
+        <i class="ti ti-mail input-icon"></i>
+        <input type="email" class="form-input" placeholder="you@school.edu" id="login-email">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <div class="input-with-icon">
+        <i class="ti ti-lock input-icon"></i>
+        <input type="password" class="form-input" placeholder="••••••••" id="login-pass">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="showOTP('login')">Sign In → Get OTP</button>
+    <div class="divider"><span>or continue with</span></div>
+    <div class="switch-text">Don't have an account? <a onclick="showPage('signup-page')">Create one</a></div>
+  </div>
+</div>
+</div>
+
+<!-- OTP PAGE -->
+<div class="page" id="otp-page">
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="logo-area">
+      <div class="logo-icon" style="background:linear-gradient(135deg,#00cec9,#6C5CE7)">🔐</div>
+      <h1>Verify OTP</h1>
+      <p id="otp-subtitle">Enter the 6-digit code sent to your email</p>
+    </div>
+    <div class="alert info"><i class="ti ti-info-circle"></i> Use code <strong>123456</strong> for this demo</div>
+    <div class="otp-boxes">
+      <input class="otp-box" maxlength="1" oninput="otpNav(this,0)" id="otp0">
+      <input class="otp-box" maxlength="1" oninput="otpNav(this,1)" id="otp1">
+      <input class="otp-box" maxlength="1" oninput="otpNav(this,2)" id="otp2">
+      <input class="otp-box" maxlength="1" oninput="otpNav(this,3)" id="otp3">
+      <input class="otp-box" maxlength="1" oninput="otpNav(this,4)" id="otp4">
+      <input class="otp-box" maxlength="1" oninput="otpNav(this,5)" id="otp5">
+    </div>
+    <div class="otp-timer">Resend OTP in <span id="timer-val">30</span>s</div>
+    <button class="btn btn-primary" style="margin-top:1.2rem" onclick="verifyOTP()">Verify & Continue</button>
+    <div class="switch-text"><a onclick="goBack()">← Back</a></div>
+  </div>
+</div>
+</div>
+
+<!-- SIGNUP PAGE -->
+<div class="page" id="signup-page">
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="logo-area">
+      <div class="logo-icon" style="background:linear-gradient(135deg,#fd79a8,#6C5CE7)">✨</div>
+      <h1>Create Account</h1>
+      <p>Join AttendX today</p>
+    </div>
+    <div class="role-grid">
+      <div class="role-card selected" onclick="selectRole(this,'teacher2')" id="role-teacher2">
+        <i style="color:#a29bfe">👨‍🏫</i><span>Teacher</span>
+      </div>
+      <div class="role-card" onclick="selectRole(this,'student2')" id="role-student2">
+        <i style="color:#00cec9">👨‍🎓</i><span>Student</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group">
+        <label class="form-label">First Name</label>
+        <input type="text" class="form-input" placeholder="AMAN">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Last Name</label>
+        <input type="text" class="form-input" placeholder="PANDEY">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <div class="input-with-icon">
+        <i class="ti ti-mail input-icon"></i>
+        <input type="email" class="form-input" placeholder="PANDEY@school.edu">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Department / Class</label>
+      <select class="form-input">
+        <option>Computer Science</option>
+        <option>Mathematics</option>
+        <option>Physics</option>
+        <option>Commerce</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" onclick="showOTP('signup')">Send OTP & Register</button>
+    <div class="switch-text">Already have an account? <a onclick="showPage('login-page')">Sign in</a></div>
+  </div>
+</div>
+</div>
+
+<!-- MAIN APP -->
+<div class="page" id="app-page">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">📋</div>
+      <div><h2>AttendX</h2><small>School Management</small></div>
+    </div>
+    <div class="sidebar-user">
+      <div class="avatar" id="sidebar-avatar">AS</div>
+      <div class="user-info">
+        <h4 id="sidebar-name">VISHESH KUMAR</h4>
+        <span><span class="online-dot"></span><span id="sidebar-role">Teacher</span></span>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section-label">Main</div>
+      <div class="nav-item active" onclick="setTab('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</div>
+      <div class="nav-item" onclick="setTab('attendance')"><i class="ti ti-clipboard-check"></i>Mark Attendance<span class="nav-badge">New</span></div>
+      <div class="nav-item" onclick="setTab('reports')"><i class="ti ti-chart-bar"></i>Reports</div>
+      <div class="nav-item" onclick="setTab('students')"><i class="ti ti-users"></i>Students</div>
+      <div class="nav-section-label">Personal</div>
+      <div class="nav-item" onclick="setTab('profile')"><i class="ti ti-user-circle"></i>My Profile</div>
+      <div class="nav-item" onclick="setTab('helpdesk')"><i class="ti ti-headset"></i>Help Desk<span class="nav-badge">2</span></div>
+      <div class="nav-item" onclick="setTab('notifications')"><i class="ti ti-bell"></i>Notifications</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="nav-item" onclick="logout()" style="border-radius:10px;background:rgba(225,112,85,0.08);color:var(--danger);border:1px solid rgba(225,112,85,0.15)">
+        <i class="ti ti-logout"></i>Logout
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <h2 id="topbar-title">Dashboard</h2>
+        <small style="color:var(--text-muted);font-size:0.75rem" id="topbar-date"></small>
+      </div>
+      <div class="topbar-actions">
+        <div class="search-bar"><i class="ti ti-search"></i><input placeholder="Search..."></div>
+        <button class="icon-btn" onclick="setTab('notifications')"><i class="ti ti-bell"></i></button>
+        <div class="avatar" style="cursor:pointer;width:36px;height:36px;font-size:0.8rem" onclick="setTab('profile')" id="top-avatar">AS</div>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD TAB -->
+      <div class="tab-content active" id="tab-dashboard">
+        <div class="alert success"><i class="ti ti-check"></i>Good morning! Today's attendance session is open. 3 classes pending.</div>
+        <div class="stats-grid">app-page { flex-direction: column; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 260px; background: rgba(22,33,62,0.95);
+    border-right: 1px solid var(--card-border); backdrop-filter: blur(20px); z-index: 100;
+    display: flex; flex-direction: column; transition: transform 0.3s ease;
+  }
+  .sidebar-logo { padding: 1.5rem; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--card-border); }
+  .sidebar-logo-icon { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .sidebar-logo h2 { font-size: 1rem; font-weight: 700; background: linear-gradient(90deg, var(--primary-light), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .sidebar-logo small { color: var(--text-muted); font-size: 0.7rem; }
+
+  .sidebar-user { padding: 1rem 1.5rem; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--card-border); }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--accent)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+  .user-info h4 { font-size: 0.85rem; font-weight: 600; }
+  .user-info span { font-size: 0.7rem; color: var(--text-muted); }
+  .online-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; margin-right: 4px; animation: pulse 2s infinite; }
+
+  .nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+  .nav-section-label { padding: 0.5rem 1.5rem; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px; padding: 11px 1.5rem; cursor: pointer;
+    transition: all 0.2s; position: relative; font-size: 0.88rem; color: var(--text-muted);
+  }
+  .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  .nav-item.active { color: var(--primary-light); background: rgba(108,92,231,0.12); }
+  .nav-item.active::before { content: ''; position: absolute; left: 0; top: 25%; bottom: 25%; width: 3px; background: var(--primary); border-radius: 0 3px 3px 0; }
+  .nav-item i { font-size: 20px; width: 22px; }
+  .nav-badge { margin-left: auto; background: var(--danger); color: white; font-size: 0.65rem; padding: 2px 7px; border-radius: 20px; font-weight: 700; }
+  .sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--card-border); }
+
+  /* MAIN CONTENT */
+  .main { margin-left: 260px; min-height: 100vh; display: flex; flex-direction: column; }
+  .topbar {
+    padding: 1rem 1.8rem; background: rgba(15,14,23,0.8); border-bottom: 1px solid var(--card-border);
+    backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: between; gap: 16px;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar h2 { font-size: 1.1rem; font-weight: 700; flex: 1; }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .icon-btn {
+    width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--card-border);
+    background: transparent; color: var(--text-muted); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 18px; transition: all 0.2s;
+  }
+  .icon-btn:hover { color: var(--text); border-color: var(--primary); background: rgba(108,92,231,0.1); }
+
+  .content { flex: 1; padding: 1.8rem; }
+
+  /* TABS */
+  .tab-nav { display: flex; gap: 4px; background: rgba(255,255,255,0.04); padding: 5px; border-radius: 14px; margin-bottom: 1.5rem; }
+  .tab-btn {
+    flex: 1; padding: 9px; border: none; border-radius: 10px; background: transparent;
+    color: var(--text-muted); font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .tab-btn.active { background: rgba(108,92,231,0.25); color: var(--primary-light); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
+
+  /* CARDS */
+  .card {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--card-border);
+    border-radius: 16px; padding: 1.25rem; transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .card:hover { border-color: rgba(108,92,231,0.3); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+  .card::before { content: ''; position: absolute; inset: 0; opacity: 0; background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(108,92,231,0.06), transparent 60%); transition: opacity 0.3s; pointer-events: none; }
+  .card:hover::before { opacity: 1; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 1.5rem; }
+  .stat-card { background: rgba(255,255,255,0.04); border: 1px solid var(--card-border); border-radius: 16px; padding: 1.2rem; position: relative; overflow: hidden; transition: all 0.3s; }
+  .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 35px rgba(0,0,0,0.3); }
+  .stat-card::after { content: ''; position: absolute; bottom: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; opacity: 0.15; }
+  .stat-card.purple::after { background: var(--primary); }
+  .stat-card.teal::after { background: var(--secondary); }
+  .stat-card.green::after { background: var(--success); }
+  .stat-card.red::after { background: var(--danger); }
+  .stat-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 12px; }
+  .stat-icon.purple { background: rgba(108,92,231,0.2); color: var(--primary-light); }
+  .stat-icon.teal { background: rgba(0,206,201,0.2); color: var(--secondary); }
+  .stat-icon.green { background: rgba(0,184,148,0.15); color: var(--success); }
+  .stat-icon.red { background: rgba(225,112,85,0.15); color: var(--danger); }
+  .stat-value { font-size: 1.9rem; font-weight: 800; letter-spacing: -1px; animation: countUp 0.5s ease; }
+  .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+  .stat-change { font-size: 0.72rem; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+  .stat-change.up { color: var(--success); }
+  .stat-change.down { color: var(--danger); }
+  <div class="stat-card purple">
+            <div class="stat-icon purple"><i class="ti ti-users"></i></div>
+            <div class="stat-value">248</div>
+            <div class="stat-label">Total Students</div>
+            <div class="stat-change up"><i class="ti ti-trending-up"></i>+12 this month</div>
+          </div>
+          <div class="stat-card teal">
+            <div class="stat-icon teal"><i class="ti ti-check"></i></div>
+            <div class="stat-value">91%</div>
+            <div class="stat-label">Today Present</div>
+            <div class="stat-change up"><i class="ti ti-trending-up"></i>+3% vs yesterday</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon green"><i class="ti ti-calendar"></i></div>
+            <div class="stat-value">18</div>
+            <div class="stat-label">Classes Today</div>
+            <div class="stat-change up"><i class="ti ti-clock"></i>6 completed</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-icon red"><i class="ti ti-alert-triangle"></i></div>
+            <div class="stat-value">22</div>
+            <div class="stat-label">Low Attendance</div>
+            <div class="stat-change down"><i class="ti ti-trending-down"></i>Below 75%</div>
+          </div>
+        </div>
+        <div class="charts-row">
+          <div class="card">
+            <div class="flex-between" style="margin-bottom:4px">
+              <h3 style="font-size:0.92rem;font-weight:700">Weekly Attendance Trend</h3>
+              <span style="font-size:0.75rem;color:var(--text-muted)">This Week</span>
+            </div>
+            <div class="mini-bars" id="trend-bars"></div>
+            <div class="bar-labels" id="trend-labels"></div>
+            <div style="display:flex;gap:1rem;margin-top:10px">
+              <span style="font-size:0.72rem;display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:var(--primary);display:inline-block"></span>Present</span>
+              <span style="font-size:0.72rem;display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:var(--danger);display:inline-block"></span>Absent</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3 style="font-size:0.92rem;font-weight:700;margin-bottom:14px">Overall Status</h3>
+            <div class="donut-wrap">
+              <svg width="130" height="130" viewBox="0 0 130 130">
+                <circle cx="65" cy="65" r="52" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="14"/>
+                <circle cx="65" cy="65" r="52" fill="none" stroke="#6C5CE7" stroke-width="14" stroke-dasharray="294 327" stroke-linecap="round"/>
+                <circle cx="65" cy="65" r="52" fill="none" stroke="#e17055" stroke-width="14" stroke-dasharray="25 327" stroke-dashoffset="-294" stroke-linecap="round"/>
+                <circle cx="65" cy="65" r="52" fill="none" stroke="#fdcb6e" stroke-width="14" stroke-dasharray="8 327" stroke-dashoffset="-319" stroke-linecap="round"/>
+              </svg>
+              <div class="donut-center"><span>91%</span><small>Present</small></div>
+            </div>
+            <div class="donut-legend">
+              <div class="legend-item"><span class="legend-dot" style="background:var(--primary)"></span><span>Present — 226</span><span style="margin-left:auto;color:var(--text-muted)">91%</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--danger)"></span><span>Absent — 14</span><span style="margin-left:auto;color:var(--text-muted)">5.6%</span></div>
+              <div class="legend-item"><span class="legend-dot" style="background:var(--warning)"></span><span>Late — 8</span><span style="margin-left:auto;color:var(--text-muted)">3.2%</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="table-card">
+          <div class="table-header">
+            <h3>Recent Attendance Records</h3>
+            <button class="small-btn" onclick="setTab('attendance')">Mark Today's →</button>
+          </div>
+          <table>
+            <thead><tr><th>Student</th><th>Roll No</th><th>Class</th><th>Date</th><th>Status</th><th>Attendance %</th></tr></thead>
+            <tbody id="recent-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MARK ATTENDANCE TAB -->
+      <div class="tab-content" id="tab-attendance">
+        <div class="flex-between" style="margin-bottom:1.2rem">
+          <div>
+            <p class="section-title">Select Class & Subject</p>
+            <div style="display:flex;gap:10px">
+              <select class="form-input" style="width:auto;padding:9px 14px;background:rgba(255,255,255,0.06);border-color:var(--card-border)">
+                <option>Class 10-A</option><option>Class 10-B</option><option>Class 11-A</option>
+              </select>
+              <select class="form-input" style="width:auto;padding:9px 14px;background:rgba(255,255,255,0.06);border-color:var(--card-border)">
+                <option>Mathematics</option><option>Physics</option><option>Computer Science</option>
+              </select>
+              <input type="date" class="form-input" style="width:auto;padding:9px 14px;background:rgba(255,255,255,0.06);border-color:var(--card-border)" id="att-date">
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="small-btn" onclick="markAll('present-marked')">✓ All Present</button>
+            <button class="small-btn primary" onclick="saveAttendance()">Save Attendance</button>
+          </div>
+        </div>
+        <div class="student-grid" id="student-grid"></div>
+      </div>
+
+      <!-- REPORTS TAB -->
+      <div class="tab-content" id="tab-reports">
+        <div class="tab-nav">
+          <button class="tab-btn active" onclick="switchSubTab(this,'rep-monthly')">Monthly Report</button>
+          <button class="tab-btn" onclick="switchSubTab(this,'rep-student')">By Student</button>
+          <button class="tab-btn" onclick="switchSubTab(this,'rep-class')">By Class</button>
+        </div>
+        <div id="rep-monthly">
+          <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+            <div class="stat-card teal"><div class="stat-icon teal"><i class="ti ti-calendar-check"></i></div><div class="stat-value">22</div><div class="stat-label">Working Days</div></div>
+            <div class="stat-card purple"><div class="stat-icon purple"><i class="ti ti-chart-line"></i></div><div class="stat-value">88.4%</div><div class="stat-label">Avg Attendance</div></div>
+            <div class="stat-card red"><div class="stat-icon red"><i class="ti ti-alert-circle"></i></div><div class="stat-value">34</div><div class="stat-label">Defaulters</div></div>
+          </div>
+          <div class="card mt1">
+            <h3 style="font-size:0.92rem;font-weight:700;margin-bottom:1rem">Month-wise Attendance (2025)</h3>
+            <div class="mini-bars" id="month-bars" style="height:100px"></div>
+            <div class="bar-labels" id="month-labels"></div>
+          </div>
+          <div class="table-card mt1">
+            <div class="table-header"><h3>Low Attendance Students (&lt;75%)</h3><button class="small-btn">Export PDF</button></div>
+            <table>
+              <thead><tr><th>Student</th><th>Class</th><th>Days Present</th><th>Attendance %</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>JAI CHAUHAN</td><td>10-A</td><td>14/22</td><td><span style="color:var(--danger);font-weight:700">63%</span></td><td><button class="small-btn" onclick="showToast('📧 Notice sent to Ravi Kumar','success')">Send Notice</button></td></tr>
+                <tr><td>ADARSH SHUKLA</td><td>11-B</td><td>16/22</td><td><span style="color:var(--warning);font-weight:700">72%</span></td><td><button class="small-btn" onclick="showToast('📧 Notice sent to Priya Singh','success')">Send Notice</button></td></tr>
+                <tr><td>KARTIK</td><td>10-B</td><td>13/22</td><td><span style="color:var(--danger);font-weight:700">59%</span></td><td><button class="small-btn" onclick="showToast('📧 Notice sent to Amit Patel','success')">Send Notice</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="rep-student" style="display:none">
+          <div class="card"><p style="color:var(--text-muted);font-size:0.85rem">Select a student to view their detailed attendance report with calendar view and trends.</p></div>
+        </div>
+        <div id="rep-class" style="display:none">
+          <div class="card"><p style="color:var(--text-muted);font-size:0.85rem">Class-wise attendance comparison charts will appear here.</p></div>
+        </div>
+      </div>
+
+      <!-- STUDENTS TAB -->
+      <div class="tab-content" id="tab-students">
+        <div class="flex-between" style="margin-bottom:1.2rem">
+          <div class="search-bar" style="width:280px"><i class="ti ti-search"></i><input placeholder="Search students..."></div>
+          <button class="small-btn primary" onclick="showToast('📝 Add student form opening...','info')"><i class="ti ti-plus"></i> Add Student</button>
+        </div>
+        <div class="table-card">
+          <table>
+            <thead><tr><th>Student</th><th>Roll No</th><th>Class</th><th>Contact</th><th>Attendance</th><th>Status</th></tr></thead>
+            <tbody id="students-table"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PROFILE TAB -->
+      <div class="tab-content" id="tab-profile">
+        <div class="profile-header">
+          <div class="profile-avatar-large" id="profile-avatar-large">AP</div>
+          <div class="profile-info">
+            <h2 id="profile-fullname">AMAN PANDEY</h2>
+            <p id="profile-role-label">Senior Teacher — Computer Science</p>
+            <div class="profile-badge"><i class="ti ti-badge-check"></i>Verified Account</div>
+            <div class="profile-stats">
+              <div class="profile-stat"><span>248</span><small>Students</small></div>
+              <div class="profile-stat"><span>18</span><small>Subjects</small></div>
+              <div class="profile-stat"><span>94%</span><small>Accuracy</small></div>
+            </div>
+          </div>
+          <button class="small-btn primary" style="margin-left:auto;align-self:flex-start" onclick="toggleEdit()">Edit Profile</button>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:1rem">Personal Information</h3>
+              <div class="profile-grid" id="profile-display">
+                <div class="profile-field"><label>Full Name</label><div class="field-val">AMAN PANDEY</div></div>
+                <div class="profile-field"><label>Employee ID</label><div class="field-val">TCH-2024-0012</div></div>
+                <div class="profile-field"><label>Email</label><div class="field-val">PANDEY@school.edu</div></div>
+                <div class="profile-field"><label>Phone</label><div class="field-val">+91 98765 43210</div></div>
+                <div class="profile-field"><label>Department</label><div class="field-val">Computer Science</div></div>
+                <div class="profile-field"><label>Joined</label><div class="field-val">August 2021</div></div>
+              </div>
+              <div id="profile-edit" style="display:none">
+                <div class="profile-grid">
+                  <div class="profile-field"><label>Full Name</label><input class="edit-form-input" value="AMAN PANDEY"></div>
+                  <div class="profile-field"><label>Phone</label><input class="edit-form-input" value="+91 98765 43210"></div>
+                  <div class="profile-field"><label>Email</label><input class="edit-form-input" value="PANDEY@school.edu"></div>
+                  <div class="profile-field"><label>Department</label><select class="edit-form-input"><option>Computer Science</option><option>Mathematics</option></select></div>
+                </div>
+                <button class="small-btn primary" onclick="saveProfile()">Save Changes</button>
+              </div>
+            </div>
+          </div>
+          <div class="col" style="max-width:300px">
+            <div class="card">
+              <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:1rem">Attendance Calendar — June</h3>
+              <div class="calendar-grid" id="mini-cal">
+                <div class="cal-header">Su</div><div class="cal-header">Mo</div><div class="cal-header">Tu</div><div class="cal-header">We</div><div class="cal-header">Th</div><div class="cal-header">Fr</div><div class="cal-header">Sa</div>
+              </div>
+            </div>
+            <div class="card mt1">
+              <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:12px">Account Security</h3>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <button class="small-btn" onclick="showToast('🔐 OTP sent to your email','info')"><i class="ti ti-lock"></i> Change Password via OTP</button>
+                <button class="small-btn" onclick="showToast('✅ 2FA enabled','success')"><i class="ti ti-shield-check"></i> Enable 2FA</button>
+                <button class="small-btn" onclick="showToast('📱 Sessions cleared','info')"><i class="ti ti-device-mobile"></i> View Active Sessions</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HELP DESK TAB -->
+      <div class="tab-content" id="tab-helpdesk">
+        <div class="help-hero">
+          <h2>Student Help Desk 🎓</h2>
+          <p>Get instant help with attendance issues, leaves, and more</p>
+          <div class="help-search">
+            <input placeholder="Search help articles...">
+            <button class="small-btn primary">Search</button>
+          </div>
+        </div>
+        <div class="help-cat-grid">
+          <div class="help-cat" onclick="showToast('📋 Opening Attendance Correction form','info')"><i class="ti ti-clipboard-check"></i><span>Attendance Correction</span></div>
+          <div class="help-cat" onclick="showToast('📅 Opening Leave Application','info')"><i class="ti ti-calendar-off"></i><span>Apply for Leave</span></div>
+          <div class="help-cat" onclick="showToast('📊 Generating your report','info')"><i class="ti ti-file-analytics"></i><span>View My Report</span></div>
+          <div class="help-cat" onclick="showToast('📧 Notifying your teacher','info')"><i class="ti ti-message-circle"></i><span>Contact Teacher</span></div>
+          <div class="help-cat" onclick="showToast('⚠️ Opening Objection form','info')"><i class="ti ti-alert-triangle"></i><span>Raise Objection</span></div>
+          <div class="help-cat" onclick="showToast('📜 Generating certificate','info')"><i class="ti ti-certificate"></i><span>Get Certificate</span></div>
+        </div>
+        <div class="row" style="gap:1.2rem">
+          <div class="col">
+            <p class="section-title">Frequently Asked Questions</p>
+            <div class="faq-list" id="faq-list"></div>
+          </div>
+          <div class="col" style="max-width:300px">
+            <p class="section-title">Raise a Ticket</p>
+            <div class="ticket-form">
+              <div class="form-group">
+                <label class="form-label">Issue Type</label>
+                <select class="form-input">
+                  <option>Attendance Mismatch</option>
+                  <option>Leave Not Approved</option>
+                  <option>Technical Error</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Describe the issue</label>
+                <textarea class="form-input" placeholder="Describe your issue in detail..."></textarea>
+              </div>
+              <button class="btn btn-primary" style="margin-top:4px" onclick="showToast('🎫 Ticket #TK-2847 raised! Response within 24 hours.','success')">Submit Ticket</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS TAB -->
+      <div class="tab-content" id="tab-notifications">
+        <div class="card">
+          <h3 style="font-size:0.9rem;font-weight:700;margin-bottom:1rem">Recent Notifications</h3>
+          <div id="notif-list"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="ti ti-check" id="toast-icon"></i><span id="toast-msg">Saved!</span></div>
+
+<script>
+const STUDENTS = [
+  {name:'ADARSH SHUKLA',roll:'CS001',class:'10-A',pct:94,color:'#6C5CE7',contact:'9876543210'},
+  {name:'JAI CHAUHAN',roll:'CS002',class:'10-A',pct:88,color:'#fd79a8',contact:'9876543211'},
+  {name:'DEEP ',roll:'CS003',class:'10-A',pct:63,color:'#00cec9',contact:'9876543212'},
+  {name:'ADARSH GOUR',roll:'CS004',class:'10-B',pct:97,color:'#fdcb6e',contact:'9876543213'},
+  {name:'AMBER GUPTA',roll:'CS005',class:'10-B',pct:79,color:'#e17055',contact:'9876543214'},
+  {name:'KARTIK',roll:'CS006',class:'11-A',pct:85,color:'#a29bfe',contact:'9876543215'},
+  {name:'ANUJ PRAJAPATI',roll:'CS007',class:'11-A',pct:91,color:'#00b894',contact:'9876543216'},
+  {name:'UTSAV ',roll:'CS008',class:'11-B',pct:76,color:'#e84393',contact:'9876543217'},
+  {name:'VISHESH',roll:'CS009',class:'10-A',pct:72,color:'#74b9ff',contact:'9876543219'},
+];
+
+let currentRole = 'teacher';
+let otpContext = '';
+let timerInterval;
+let studentStatus = {};
+let isEditing = false;
+
+function selectRole(el, role) {
+  el.closest('.role-grid').querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  currentRole = role;
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showOTP(ctx) {
+  otpContext = ctx;
+  document.getElementById('otp-subtitle').textContent = ctx === 'login' ? 'Verify your identity to sign in' : 'Verify your email to complete registration';
+  for(let i=0;i<6;i++) { document.getElementById('otp'+i).value=''; document.getElementById('otp'+i).classList.remove('filled'); }
+  showPage('otp-page');
+  startTimer();
+  document.getElementById('otp0').focus();
+}
+
+function otpNav(el, i) {
+  el.classList.toggle('filled', el.value !== '');
+  if(el.value && i<5) document.getElementById('otp'+(i+1)).focus();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  let t = 30;
+  document.getElementById('timer-val').textContent = t;
+  timerInterval = setInterval(()=>{
+    t--;
+    document.getElementById('timer-val').textContent = t;
+    if(t<=0) { clearInterval(timerInterval); document.getElementById('timer-val').textContent = '0 — Resend'; }
+  },1000);
+}
+
+function verifyOTP() {
+  const code = [0,1,2,3,4,5].map(i=>document.getElementById('otp'+i).value).join('');
+  if(code === '123456') {
+    clearInterval(timerInterval);
+    initApp();
+    showPage('app-page');
+    showToast('✅ Verified! Welcome to AttendX', 'success');
+  } else {
+    showToast('❌ Invalid OTP. Try 123456', 'error');
+    for(let i=0;i<6;i++) { document.getElementById('otp'+i).style.borderColor='var(--danger)'; }
+    setTimeout(()=>{ for(let i=0;i<6;i++) document.getElementById('otp'+i).style.borderColor=''; },1500);
+  }
+}
+
+function goBack() { showPage(otpContext==='login'?'login-page':'signup-page'); clearInterval(timerInterval); }
+
+function logout() { showPage('login-page'); showToast('👋 Logged out successfully','info'); }
+
+function initApp() {
+  const today = new Date();
+  document.getElementById('topbar-date').textContent = today.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('att-date').value = today.toISOString().split('T')[0];
+  renderStudentGrid();
+  renderRecentTable();
+  renderStudentsTable();
+  renderTrendBars();
+  renderMonthBars();
+  renderFAQ();
+  renderNotifications();
+  renderCalendar();
+}
+
+function setTab(name) {
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  event.currentTarget && event.currentTarget.classList.add('active');
+  document.querySelector(`[onclick="setTab('${name}')"]`)?.classList.add('active');
+  const tc = document.getElementById('tab-'+name);
+  if(tc) tc.classList.add('active');
+  const titles = {dashboard:'Dashboard',attendance:'Mark Attendance',reports:'Reports & Analytics',students:'Student Management',profile:'My Profile',helpdesk:'Student Help Desk',notifications:'Notifications'};
+  document.getElementById('topbar-title').textContent = titles[name] || name;
+}
+
+function switchSubTab(btn, id) {
+  btn.closest('.tab-content').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['rep-monthly','rep-student','rep-class'].forEach(x=>{ const el=document.getElementById(x); if(el) el.style.display='none'; });
+  const el = document.getElementById(id);
+  if(el) el.style.display='block';
+}
+
+function renderStudentGrid() {
+  const g = document.getElementById('student-grid');
+  g.innerHTML = STUDENTS.map((s,i)=>`
+    <div class="student-mark-card ${studentStatus[i]||''}" id="sc${i}">
+      <div class="stu-avatar" style="background:${s.color}22;color:${s.color}">${s.name.split(' ').map(w=>w[0]).join('')}</div>
+      <div class="stu-name">${s.name}</div>
+      <div class="stu-roll">${s.roll}</div>
+      <div class="status-pill" id="sp${i}" style="background:rgba(255,255,255,0.06);color:var(--text-muted)">Not Marked</div>
+      <div class="mark-btn-row">
+        <button class="mark-btn p" onclick="markStudent(${i},'present-marked','P','var(--success)')">P</button>
+        <button class="mark-btn a" onclick="markStudent(${i},'absent-marked','A','var(--danger)')">A</button>
+        <button class="mark-btn l" onclick="markStudent(${i},'late-marked','L','var(--warning)')">L</button>
+      </div>
+    </div>`).join('');
+}
+
+function markStudent(i, cls, label, color) {
+  studentStatus[i] = cls;
+  const card = document.getElementById('sc'+i);
+  card.className = 'student-mark-card '+cls;
+  const pill = document.getElementById('sp'+i);
+  const labels = {'P':'Present','A':'Absent','L':'Late'};
+  const bgs = {'P':'rgba(0,184,148,0.15)','A':'rgba(225,112,85,0.15)','L':'rgba(253,203,110,0.15)'};
+  pill.textContent = labels[label];
+  pill.style.background = bgs[label];
+  pill.style.color = color;
+}
+
+function markAll(cls) {
+  STUDENTS.forEach((_,i)=>markStudent(i,cls,'P','var(--success)'));
+}
+
+function saveAttendance() {
+  const marked = Object.keys(studentStatus).length;
+  showToast(`✅ Attendance saved for ${marked}/${STUDENTS.length} students`, 'success');
+}
+
+function renderRecentTable() {
+  const tb = document.getElementById('recent-table');
+  const statuses = ['present','present','absent','present','late','present','present','present'];
+  tb.innerHTML = STUDENTS.slice(0,6).map((s,i)=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:30px;height:30px;font-size:0.7rem;background:${s.color}33;color:${s.color}">${s.name.split(' ').map(w=>w[0]).join('')}</div>${s.name}</div></td>
+    <td style="color:var(--text-muted)">${s.roll}</td><td>${s.class}</td>
+    <td style="color:var(--text-muted)">${new Date().toLocaleDateString('en-IN')}</td>
+    <td><span class="badge ${statuses[i]}">${statuses[i]}</span></td>
+    <td><div style="display:flex;align-items:center;gap:8px"><span style="font-size:0.8rem;font-weight:700;color:${s.pct<75?'var(--danger)':s.pct<85?'var(--warning)':'var(--success)'}">${s.pct}%</span><div style="flex:1;max-width:60px"><div class="progress-bar"><div class="progress-fill" style="width:${s.pct}%;background:${s.pct<75?'var(--danger)':'var(--primary)'}"></div></div></div></div></td>
+  </tr>`).join('');
+}
+
+function renderStudentsTable() {
+  const tb = document.getElementById('students-table');
+  tb.innerHTML = STUDENTS.map(s=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:30px;height:30px;font-size:0.7rem;background:${s.color}33;color:${s.color}">${s.name.split(' ').map(w=>w[0]).join('')}</div>${s.name}</div></td>
+    <td style="color:var(--text-muted)">${s.roll}</td><td>${s.class}</td>
+    <td style="color:var(--text-muted)">${s.contact}</td>
+    <td><span style="color:${s.pct<75?'var(--danger)':s.pct<85?'var(--warning)':'var(--success)'};font-weight:700">${s.pct}%</span></td>
+    <td><span class="badge ${s.pct<75?'absent':s.pct<85?'late':'present'}">${s.pct<75?'Low':'Good'}</span></td>
+  </tr>`).join('');
+}
+
+function renderTrendBars() {
+  const data = [88,92,79,95,91,87,93];
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const wrap = document.getElementById('trend-bars');
+  const lbl = document.getElementById('trend-labels');
+  wrap.innerHTML = data.map((v,i)=>`<div class="mini-bar" style="height:${v}%;background:${i===4?'var(--primary)':'rgba(108,92,231,0.5)'};" title="${v}%"></div>`).join('');
+  lbl.innerHTML = days.map(d=>`<div class="bar-label">${d}</div>`).join('');
+}
+
+function renderMonthBars() {
+  const data = [82,85,88,79,91,88,92,85,87,90,88,85];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('month-bars').innerHTML = data.map((v,i)=>`<div class="mini-bar" style="height:${v}%;background:rgba(0,206,201,${0.4+v/250});" title="${v}%"></div>`).join('');
+  document.getElementById('month-labels').innerHTML = months.map(m=>`<div class="bar-label">${m}</div>`).join('');
+}
+
+const FAQS = [
+  {q:'How is my attendance percentage calculated?',a:'Your attendance % = (days present / total working days) × 100. Holidays and leaves are excluded from working days.'},
+  {q:'What happens if my attendance falls below 75%?',a:'You receive an email warning at 80% and 75%. Below 75% may result in debarment from exams. Your parents are also notified.'},
+  {q:'Can I apply for leave retroactively?',a:'Yes, within 5 working days of the absence. Submit a leave application with a valid reason and supporting documents.'},
+  {q:'How do I dispute a wrong attendance entry?',a:'Go to Help Desk → Attendance Correction, fill the form with date and subject. Your teacher is notified and can approve the correction.'},
+  {q:'When is attendance marked each day?',a:'Attendance is marked within the first 10 minutes of each class. Late entries are marked as "Late" and count as 50%.'},
+];
+
+function renderFAQ() {
+  document.getElementById('faq-list').innerHTML = FAQS.map((f,i)=>`
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(${i})">
+        <span>${f.q}</span><i class="ti ti-chevron-down faq-icon" id="faq-icon-${i}"></i>
+      </div>
+      <div class="faq-a" id="faq-a-${i}">${f.a}</div>
+    </div>`).join('');
+}
+
+function toggleFAQ(i) {
+  const a = document.getElementById('faq-a-'+i);
+  const icon = document.getElementById('faq-icon-'+i);
+  a.classList.toggle('open');
+  icon.classList.toggle('open');
+}
+
+const NOTIFS = [
+  {color:'var(--success)',text:'Attendance marked successfully for Class 10-A, Mathematics.',time:'2 min ago'},
+  {color:'var(--warning)',text:'⚠️ Ravi Kumar has attendance below 75%. Consider sending a notice.',time:'1 hour ago'},
+  {color:'var(--primary)',text:'📊 Monthly attendance report for May is ready. Click to view.',time:'3 hours ago'},
+  {color:'var(--danger)',text:'🔴 3 students are absent for 5+ consecutive days in Class 11-B.',time:'Yesterday'},
+  {color:'var(--secondary)',text:'📅 Exam schedule has been updated. Review timetable for conflicts.',time:'2 days ago'},
+];
+
+function renderNotifications() {
+  document.getElementById('notif-list').innerHTML = NOTIFS.map(n=>`
+    <div class="notif-item">
+      <div class="notif-dot" style="background:${n.color}"></div>
+      <div><div class="notif-text">${n.text}</div><div class="notif-time">${n.time}</div></div>
+    </div>`).join('');
+}
+
+function renderCalendar() {
+  const cal = document.getElementById('mini-cal');
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const days = new Date(year, month+1, 0).getDate();
+  const absent = [5,12,19];
+  let html = '<div class="cal-header">Su</div><div class="cal-header">Mo</div><div class="cal-header">Tu</div><div class="cal-header">We</div><div class="cal-header">Th</div><div class="cal-header">Fr</div><div class="cal-header">Sa</div>';
+  for(let i=0;i<firstDay;i++) html += '<div></div>';
+  for(let d=1;d<=days;d++) {
+    const isToday = d===today.getDate();
+    const isAbsent = absent.includes(d);
+    const isWeekend = ((firstDay+d-1)%7===0 || (firstDay+d-1)%7===6);
+    let cls = 'cal-day';
+    if(isToday) cls += ' today';
+    else if(isAbsent && !isWeekend) cls += ' absent';
+    else if(!isWeekend && d < today.getDate()) cls += ' present';
+    html += `<div class="${cls}">${d}</div>`;
+  }
+  cal.innerHTML = html;
+}
+
+function toggleEdit() {
+  isEditing = !isEditing;
+  document.getElementById('profile-display').style.display = isEditing ? 'none' : 'grid';
+  document.getElementById('profile-edit').style.display = isEditing ? 'block' : 'none';
+}
+
+function saveProfile() {
+  toggleEdit();
+  showToast('✅ Profile updated successfully','success');
+}
+
+let toastTimer;
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  const icon = document.getElementById('toast-icon');
+  const txt = document.getElementById('toast-msg');
+  txt.textContent = msg;
+  icon.className = type==='success'?'ti ti-check':type==='error'?'ti ti-x':'ti ti-info-circle';
+  t.style.borderColor = type==='success'?'var(--success)':type==='error'?'var(--danger)':'var(--primary)';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+function createParticles() {
+  const wrap = document.getElementById('particles');
+  const colors = ['#6C5CE7','#00cec9','#fd79a8','#a29bfe'];
+  for(let i=0;i<18;i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = 2+Math.random()*4;
+    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${colors[~~(Math.random()*colors.length)]};opacity:0.4;animation-duration:${8+Math.random()*15}s;animation-delay:${-Math.random()*15}s;`;
+    wrap.appendChild(p);
+  }
+}
+
+document.querySelectorAll('.card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+    card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+  });
+});
+
+createParticles();
+</script>
+</body>
+</html>
